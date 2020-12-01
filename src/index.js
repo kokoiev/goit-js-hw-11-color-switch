@@ -1,10 +1,8 @@
 const btnStopRef = document.querySelector(`button[data-action="stop"]`);
 const btnStartRef = document.querySelector(`button[data-action="start"]`);
 const bodyRef = document.querySelector(`body`);
-const tagStyleRef = document.createElement('style');
-const randomIntegerFromInterval = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
+
+let intervalId = null;
 const colors = [
   '#FFFFFF',
   '#2196F3',
@@ -13,23 +11,22 @@ const colors = [
   '#009688',
   '#795548',
 ];
-bodyRef.appendChild(tagStyleRef);
-
-function changeColor() {
-        if (btnStartRef.disabled === true) {
-        setTimeout(changeColor, 1000)
-        const randomColor = colors[randomIntegerFromInterval(0, colors.length - 1)];
-        tagStyleRef.setAttribute("type", "text/css");
-        tagStyleRef.textContent = `body {background: ${randomColor};}`
-    }
-    return
+const randomIntegerFromInterval = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-btnStartRef.addEventListener('click', () => { btnStartRef.setAttribute("disabled", "disabled"); changeColor() })
-btnStopRef.addEventListener('click', () => btnStartRef.removeAttribute("disabled" ))
+function changeBgColor() { 
+  const randomColor = colors[randomIntegerFromInterval(0, colors.length - 1)];
+  bodyRef.setAttribute('style', `background: ${randomColor}`);
+  btnStartRef.setAttribute("disabled", "disabled")
+  
+};
 
+function onClickStart() {intervalId = setInterval(changeBgColor, 1000)}
+function onClickStop() {
+  clearInterval(intervalId);
+  btnStartRef.disabled = false
+}
 
-
-
-
-    
+btnStartRef.addEventListener('click', onClickStart)
+btnStopRef.addEventListener('click', onClickStop)
